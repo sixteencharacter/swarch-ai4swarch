@@ -38,15 +38,20 @@ evidence: system/online-boutique/protos/demo.proto, system/online-boutique/kuber
 
 | ผู้เรียก → ผู้ถูกเรียก | หลักฐานที่ AI อ้าง | ยืนยันแล้วหรือไม่ ✅ / ❌ / ❓ | สิ่งที่นิสิตพบ |
 |---|---|---|---|
-| | | | |
-| | | | |
-| | | | |
-| | | | |
-| | | | |
+| frontend → cartservice | `frontend.yaml` — env `CART_SERVICE_ADDR=cartservice:7070` | ✅ | มีการเชื่อมต่อด้วย ENV ดังกล่าวจริง |
+| frontend → checkoutservice | `frontend.yaml` — env `CHECKOUT_SERVICE_ADDR=checkoutservice:5050` | ✅ | มีการเชื่อมต่อด้วย ENV ดังกล่าวจริง |
+| checkoutservice → paymentservice | `checkoutservice.yaml` — env `PAYMENT_SERVICE_ADDR=paymentservice:50051` | ✅ | มีการเชื่อมต่อด้วย ENV ดังกล่าวจริง |
+| cartservice → redis-cart | `cartservice.yaml` — env `REDIS_ADDR=redis-cart:6379` | ✅ | มีการเชื่อมต่อด้วย ENV ดังกล่าวจริง |
+| recommendationservice → productcatalogservice | `recommendationservice.yaml` — env `PRODUCT_CATALOG_SERVICE_ADDR=productcatalogservice:3550` | ✅ | มีการเชื่อมต่อด้วย ENV ดังกล่าวจริง |
 
 - **สิ่งที่ผิดหรือขาดหายไป** ใน Run B (dependency ที่ไม่มีจริง, dependency ที่ขาดไป, container ที่น่าสงสัย): …
 
 ## สะท้อนคิด (ข้อละ 2–3 ประโยค)
 
 1. เปรียบเทียบ A กับ B: agent **ไม่สามารถ**รู้อะไรได้จากไฟล์ `.proto` เพียงไฟล์เดียว และเพราะเหตุใด
+
+> Agent ไม่สามารถที่จะเข้าใจ dependency ของการ call ระหว่าง service ต่าง ๆ สิ่งนี้เป็นเพราะว่า ใน A Agent สามารถผ่านได้แค่เพียง contract ของ gRPC service เท่านั้น แต่ B จะได้เรียนรู้การเชื่อมต่อระหว่าง service ระบบจึงสามารถสรุปข้อมูลได้ว่าการเชื่อมต่อภายในระบบเป็นอย่างไร
+
 2. ข้อผิดพลาด**ข้อใดข้อหนึ่ง**ที่จะทำให้สมาชิกใหม่ของทีมเข้าใจผิดมากที่สุด หากเผยแพร่แผนภาพนี้โดยไม่ตรวจสอบ
+
+> สิ่งที่อาจจะเกิดขึ้นก็คือถ้าเอาแผนภาพนี้ส่งออกโดยไม่ได้ตรวจสอบแล้วก็คือว่า dependency ระหว่าง service และ component ต่าง ๆ อาจจะผิดได้และอาจจะทำให้สมาชิกของทีมเข้าใจผิดเกี่ยวกับการจัดวางระบบได้

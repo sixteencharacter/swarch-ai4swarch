@@ -35,10 +35,10 @@ language: Thai
 
 | เกณฑ์ | Run a | Run b |
 |---|---|---|
-| ใช้ตัวเลขจาก scenario หรือไม่ (latency, ช่วงพีก, ข้อจำกัดของ MailFast) | | |
-| ทางเลือกที่พิจารณา (ระบุ) | | |
-| จัดการแต้มสะสมแบบ "ครั้งเดียวเท่านั้น" และ rate limit ของ MailFast หรือไม่ อย่างไร | | |
-| มีสิ่งที่แต่งขึ้นเองหรือไม่ (ตัวเลข เครื่องมือ หรือข้อเท็จจริงที่ไม่มีใน scenario) | | |
+| ใช้ตัวเลขจาก scenario หรือไม่ (latency, ช่วงพีก, ข้อจำกัดของ MailFast) | ไม่ใข้งาน | ใช้งานตัวเลข |
+| ทางเลือกที่พิจารณา (ระบุ) | Synchronous fan-out จาก `checkoutservice`, Asynchronous messaging ผ่าน message broker และ Orchestration ผ่าน workflow service | synchronous gRPC, RabbitMQ, Outbox pattern |
+| จัดการแต้มสะสมแบบ "ครั้งเดียวเท่านั้น" และ rate limit ของ MailFast หรือไม่ อย่างไร | ไม่ได้มีการพูดถึง idempotency และ rate limit | มีรายละเอียดการใช้งานให้เกิด idempotency และ rate limiting พร้อมรายละเอียดในระดับตัวเลข |
+| มีสิ่งที่แต่งขึ้นเองหรือไม่ (ตัวเลข เครื่องมือ หรือข้อเท็จจริงที่ไม่มีใน scenario) | พบเพียง assumption เช่นว่า การ implement แบบหนึ่งจะลด coupling ได้ | ตัวเลขตรงกับ context ที่ได้ให้กับโมเดล |
 
 ## รับผิดชอบ ADR ฉบับสุดท้ายของตัวเอง
 
@@ -51,6 +51,6 @@ language: Thai
 
 | # | สิ่งที่เปลี่ยนจากร่างของ AI | เหตุผล |
 |---|---|---|
-| 1 | | |
-| 2 | | |
-| 3 | | |
+| 1 | เพิ่ม alternative เป็น event broker อย่าง kafka | เนื่องจากว่า kafka ช่วยให้การทำข้อมูลเชิง analytics ง่ายขึ้น เนื่องจากมีการเก็บข้อมูลในตัวอยู่แลเว |
+| 2 | เปลี่ยน decision ให้เลือก kafka เป็นสิ่งที่จะใช้งาน | เพราะว่ายังคงความสามารถคล้าย ๆ กับ RabbitMQ แต่สามารถเก็บข้อมูลได้ |
+| 3 | ใส่รายละเอียดเกี่ยวกับ idempotency ใน kafka | เพื่อที่จะทำให้ ADR สามารถบรรยายวิธีรับมือสิ่งต่าง ๆ เพื่อลด negative consequence จาก technology ที่เลือก |
